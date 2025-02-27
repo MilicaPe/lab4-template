@@ -2,18 +2,39 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: myapp-ingress
-  namespace: default
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  ingressClassName: nginx
   rules:
-  - host: myapp.local
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: myapp-service
-            port:
-              number: 80
+    - host: myapp.local
+      http:
+        paths:
+          - path: /gateway
+            pathType: Prefix
+            backend:
+              service:
+                name: gateway
+                port:
+                  number: 80
+          - path: /loyalty
+            pathType: Prefix
+            backend:
+              service:
+                name: loyalty
+                port:
+                  number: 8050
+          - path: /payment
+            pathType: Prefix
+            backend:
+              service:
+                name: payment
+                port:
+                  number: 8060
+          - path: /reservation
+            pathType: Prefix
+            backend:
+              service:
+                name: reservation
+                port:
+                  number: 8070
