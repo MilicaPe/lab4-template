@@ -1,10 +1,7 @@
-#global:
-#  image:
-#    repository: my-docker-registry/my-app
-#    tag: latest
-#  service:
-#    type: ClusterIP
-#    port: 80
+global:
+  ingress:
+    enabled: true  
+    host: example.com
 
 services:
   gateway:
