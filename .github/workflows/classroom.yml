@@ -19,7 +19,7 @@ jobs:
       - name: Install Yandex Cloud CLI
         run: |
           curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
-          echo "$HOME/yandex-cloud/bin" >> $GITHUB_PATH
+          sudo mv /root/.yarn/bin/yc /usr/local/bin/yc
 
       - name: Authenticate in Yandex Cloud
         run: |
