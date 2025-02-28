@@ -21,6 +21,9 @@ jobs:
           curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
           echo "$HOME/yandex-cloud/bin" >> $GITHUB_PATH
 
+
+
+
       - name: Authenticate in Yandex Cloud
         run: |
           yc config profile create github-actions
@@ -66,24 +69,42 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/loyalty:latest   
 
       #  3. Деплой в Kubernetes
-      - name: Deploy to Kubernetes
-        uses: azure/setup-kubectl@v3
 
-      - name: Configure Kubeconfig
+      - name: Установка kubectl и helm
         run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG }}" | base64 --decode > $HOME/.kube/config
-      
-      - name: Check Kubernetes Access
-        run: kubectl get nodes
+          sudo apt-get update && sudo apt-get install -y kubectl
+          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
-      - name: Apply Kubernetes manifests
+      - name: Настройка подключения к Kubernetes
         run: |
-          kubectl apply -f k8s/
-          kubectl rollout status deployment/gateway
-          kubectl rollout status deployment/reservation
-          kubectl rollout status deployment/payment
-          kubectl rollout status deployment/loyalty
+          yc managed-kubernetes cluster get-credentials ${{ secrets.K8S_CLUSTER_NAME }} \
+            --external --force
+
+      - name: Деплой Helm-чартов
+        run: |
+          helm upgrade --install gateway helm-chart/ \
+            --namespace ${{ secrets.K8S_NAMESPACE }} \
+            --set image.repository=${{ secrets.REGISTRY }}/gateway \
+            --set image.tag=latest
+          
+          helm upgrade --install reservation helm-chart/ \
+            --namespace ${{ secrets.K8S_NAMESPACE }} \
+            --set image.repository=${{ secrets.REGISTRY }}/reservation \
+            --set image.tag=latest
+          
+          helm upgrade --install payment helm-chart/ \
+            --namespace ${{ secrets.K8S_NAMESPACE }} \
+            --set image.repository=${{ secrets.REGISTRY }}/payment \
+            --set image.tag=latest
+          
+          helm upgrade --install loyalty helm-chart/ \
+            --namespace ${{ secrets.K8S_NAMESPACE }} \
+            --set image.repository=${{ secrets.REGISTRY }}/loyalty \
+            --set image.tag=latest
+
+      - name: Проверка деплоя
+        run: kubectl get pods -n ${{ secrets.K8S_NAMESPACE }}
+
 
       # 5. Запуск API тестов
       - name: Run API Tests
