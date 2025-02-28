@@ -1,4 +1,5 @@
 global:
+  namespace: default
   ingress:
     enabled: true  
     host: example.com
