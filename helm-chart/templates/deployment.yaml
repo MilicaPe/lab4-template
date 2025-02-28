@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ $name }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ $name }}
 spec:
@@ -19,8 +20,15 @@ spec:
       containers:
         - name: {{ $name }}
           image: {{ $service.image.repository }}:{{ $service.image.tag }}
+          imagePullPolicy: Always
           ports:
             - containerPort: {{ (index $service.ports 0).containerPort }}
+
+          env:
+            {{- range $service.env }}
+            - name: {{ .name }}
+              value: "{{ .value }}"
+            {{- end }}
 ---
 {{- end }}
 {{- end }}
