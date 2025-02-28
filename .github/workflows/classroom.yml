@@ -87,25 +87,21 @@ jobs:
 
       - name: Деплой Helm-чартов
         run: |
-          helm uninstall gateway --namespace ${{ secrets.K8S_NAMESPACE }}
           helm upgrade --install gateway helm-chart/ \
             --namespace ${{ secrets.K8S_NAMESPACE }} \
             --set image.repository=${{ secrets.REGISTRY }}/gateway \
             --set image.tag=latest
 
-          helm uninstall reservation --namespace ${{ secrets.K8S_NAMESPACE }}
           helm upgrade --install reservation helm-chart/ \
             --namespace ${{ secrets.K8S_NAMESPACE }} \
             --set image.repository=${{ secrets.REGISTRY }}/reservation \
             --set image.tag=latest
           
-          helm uninstall payment --namespace ${{ secrets.K8S_NAMESPACE }}
           helm upgrade --install payment helm-chart/ \
             --namespace ${{ secrets.K8S_NAMESPACE }} \
             --set image.repository=${{ secrets.REGISTRY }}/payment \
             --set image.tag=latest
 
-          helm uninstall loyalty --namespace ${{ secrets.K8S_NAMESPACE }}
           helm upgrade --install loyalty helm-chart/ \
             --namespace ${{ secrets.K8S_NAMESPACE }} \
             --set image.repository=${{ secrets.REGISTRY }}/loyalty \
