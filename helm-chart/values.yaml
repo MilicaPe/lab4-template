@@ -8,6 +8,7 @@
 
 services:
   gateway:
+    type: NodePort
     enabled: true
     replicaCount: 2
     image:
@@ -16,8 +17,7 @@ services:
     ports:
       - name: http
         containerPort: 8080
-        servicePort: 80
-        type: NodePort
+        servicePort: 80 
     env:
       - name: SERVICE_NAME
         value: gateway
@@ -25,6 +25,7 @@ services:
   reservation:
     enabled: true
     replicaCount: 2
+    type: ClusterIP
     image:
       repository: milica764/reservation
       tag: latest
@@ -32,7 +33,6 @@ services:
       - name: http
         containerPort: 8070
         servicePort: 8070
-        type: ClusterIP
     env:
       - name: SERVICE_NAME
         value: reservation
@@ -40,6 +40,7 @@ services:
   payment:
     enabled: true
     replicaCount: 2
+    type: ClusterIP
     image:
       repository: milica764/payment
       tag: latest
@@ -47,7 +48,6 @@ services:
       - name: http
         containerPort: 8060
         servicePort: 8060
-        type: ClusterIP
     env:
       - name: SERVICE_NAME
         value: payment
@@ -55,6 +55,7 @@ services:
   loyalty:
     enabled: true
     replicaCount: 2
+    type: ClusterIP
     image:
       repository: milica764/loyalty
       tag: latest
@@ -62,7 +63,6 @@ services:
       - name: http
         containerPort: 8050
         servicePort: 8050
-        type: ClusterIP
     env:
       - name: SERVICE_NAME
         value: loyalty
