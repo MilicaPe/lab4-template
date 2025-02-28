@@ -71,8 +71,8 @@ jobs:
       #  3. Деплой в Kubernetes
 
       - name: Create Kubernetes Namespace
-          run: |
-            kubectl create namespace ${{ secrets.K8S_NAMESPACE }} || echo "Namespace already exists"
+        run: |
+          kubectl create namespace ${{ secrets.K8S_NAMESPACE }} || echo "Namespace already exists"
 
 
       - name: Установка kubectl и helm
