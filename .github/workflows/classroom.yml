@@ -85,28 +85,41 @@ jobs:
           yc managed-kubernetes cluster get-credentials ${{ secrets.K8S_CLUSTER_NAME }} \
             --external --force
 
-      - name: Деплой Helm-чартов
+      - name: Деплой gateway
         run: |
           helm upgrade --install gateway helm-chart/ \
             --namespace ${{ secrets.K8S_NAMESPACE }} \
-            --set image.repository=${{ secrets.REGISTRY }}/gateway \
-            --set image.tag=latest
+            --set services.gateway.enabled=true \
+            --set services.gateway.image.repository=${{ secrets.DOCKER_USERNAME }}/gateway \
+            --set services.gateway.image.tag=latest
 
+      - name: Deploy reservation
+        run: |
           helm upgrade --install reservation helm-chart/ \
             --namespace ${{ secrets.K8S_NAMESPACE }} \
-            --set image.repository=${{ secrets.REGISTRY }}/reservation \
-            --set image.tag=latest
+            --set serviceName=reservation \
+            --set services.reservation.enabled=true \
+            --set services.reservation.image.repository=${{ secrets.DOCKER_USERNAME }}/reservation \
+            --set services.reservation.image.tag=latest
           
+      - name: Deploy payment
+        run: |
           helm upgrade --install payment helm-chart/ \
             --namespace ${{ secrets.K8S_NAMESPACE }} \
-            --set image.repository=${{ secrets.REGISTRY }}/payment \
-            --set image.tag=latest
+            --set serviceName=payment \
+            --set services.payment.enabled=true \
+            --set services.payment.image.repository=${{ secrets.DOCKER_USERNAME }}/payment \
+            --set services.payment.image.tag=latest
 
+      - name: Deploy loyalty
+        run: |
           helm upgrade --install loyalty helm-chart/ \
             --namespace ${{ secrets.K8S_NAMESPACE }} \
-            --set image.repository=${{ secrets.REGISTRY }}/loyalty \
-            --set image.tag=latest
-
+            --set serviceName=loyalty \
+            --set services.loyalty.enabled=true \
+            --set services.loyalty.image.repository=${{ secrets.DOCKER_USERNAME }}/loyalty \
+            --set services.loyalty.image.tag=latest
+            
       - name: Проверка деплоя
         run: kubectl get pods -n ${{ secrets.K8S_NAMESPACE }}
 

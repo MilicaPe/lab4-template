@@ -1,13 +1,13 @@
 global:
   namespace: default
   ingress:
-    enabled: true  
+    enabled: false  
     host: example.com
 
 services:
   gateway:
     type: NodePort
-    enabled: true
+    enabled: false
     replicaCount: 2
     image:
       repository: milica764/gateway
@@ -21,7 +21,7 @@ services:
         value: gateway
 
   reservation:
-    enabled: true
+    enabled: false
     replicaCount: 2
     type: ClusterIP
     image:
@@ -36,7 +36,7 @@ services:
         value: reservation
 
   payment:
-    enabled: true
+    enabled: false
     replicaCount: 2
     type: ClusterIP
     image:
@@ -51,7 +51,7 @@ services:
         value: payment
 
   loyalty:
-    enabled: true
+    enabled: false
     replicaCount: 2
     type: ClusterIP
     image:

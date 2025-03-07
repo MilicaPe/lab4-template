@@ -1,5 +1,5 @@
 {{- range $name, $service := .Values.services }}
-{{- if $service.enabled }}
+{{- if and $service.enabled (eq $name $.Values.serviceName) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
