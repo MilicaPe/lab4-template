@@ -6,6 +6,9 @@ jobs:
   build:
     name: Autograding
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [reservation, payment, loyalty, gateway]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -54,9 +57,7 @@ jobs:
           context: ./${{ matrix.service }}
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:latest
-        strategy:
-          matrix:
-            service: [reservation, payment, loyalty, gateway]
+
 
       #  3. Деплой в Kubernetes
 
