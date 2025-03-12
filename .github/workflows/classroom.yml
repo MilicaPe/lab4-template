@@ -6,9 +6,6 @@ jobs:
   build:
     name: Autograding
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [reservation, payment, loyalty, gateway]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -51,12 +48,35 @@ jobs:
           push: true             # Публикуем образ в Docker Hub
           tags: ${{ secrets.DOCKER_USERNAME }}/my-postgres:latest
 
+
+        #  3. Сборка и публикация образа
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v4
         with:
-          context: ./${{ matrix.service }}
+          context: ./gateway
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/gateway:latest
+
+      - name: Build and Push Reservation
+        uses: docker/build-push-action@v4
+        with:
+          context: ./reservation
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/reservation:latest
+  
+      - name: Build and Push Payment
+        uses: docker/build-push-action@v4
+        with:
+          context: ./payment
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/payment:latest
+    
+      - name: Build and Push Payment
+        uses: docker/build-push-action@v4
+        with:
+          context: ./loyalty
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/loyalty:latest
 
 
       #  3. Деплой в Kubernetes
