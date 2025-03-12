@@ -40,33 +40,23 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       #  3. Сборка и публикация образа
+
+      - name: Build and Push PostgreSQL Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./postgres    # Путь к директории с Dockerfile
+          push: true             # Публикуем образ в Docker Hub
+          tags: ${{ secrets.DOCKER_USERNAME }}/my-postgres:latest
+
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v4
         with:
-          context: ./gateway
+          context: ./${{ matrix.service }}
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/gateway:latest
-
-      - name: Build and Push Reservation
-        uses: docker/build-push-action@v4
-        with:
-          context: ./reservation
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/reservation:latest
-  
-      - name: Build and Push Payment
-        uses: docker/build-push-action@v4
-        with:
-          context: ./payment
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/payment:latest
-  
-      - name: Build and Push Loyalty
-        uses: docker/build-push-action@v4
-        with:
-          context: ./loyalty
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/loyalty:latest   
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:latest
+        strategy:
+          matrix:
+            service: [reservation, payment, loyalty, gateway]
 
       #  3. Деплой в Kubernetes
 
@@ -87,8 +77,14 @@ jobs:
 
       - name: database
         run: |
+          helm uninstall postgres --namespace ${{ secrets.K8S_NAMESPACE }}
           helm upgrade --install postgres helm-chart/ \
           --namespace ${{ secrets.K8S_NAMESPACE }}
+
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          kubectl wait --for=condition=available --timeout=600s deployment/postgres -n ${{ secrets.K8S_NAMESPACE }}
 
 
       - name: Деплой gateway
