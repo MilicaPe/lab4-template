@@ -1,9 +1,12 @@
-FROM bitnami/postgresql:latest
+FROM postgres:latest
 
-# Копируем скрипты в директорию, откуда PostgreSQL их запустит
-COPY scripts/*.sql /docker-entrypoint-initdb.d/
-COPY scripts/20-create-databases.sh /docker-entrypoint-initdb.d/
-COPY init-db.sh /docker-entrypoint-initdb.d/
+# Устанавливаем переменные окружения
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=postgres
+ENV POSTGRES_DB=mydatabase
 
-# Даем права на выполнение
-RUN chmod +x /docker-entrypoint-initdb.d/init-db.sh
+# Копируем скрипты инициализации
+COPY scripts /docker-entrypoint-initdb.d/
+
+# Даем права на выполнение всех скриптов
+RUN chmod -R 755 /docker-entrypoint-initdb.d/

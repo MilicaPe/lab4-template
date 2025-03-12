@@ -85,6 +85,12 @@ jobs:
           yc managed-kubernetes cluster get-credentials ${{ secrets.K8S_CLUSTER_NAME }} \
             --external --force
 
+      - name: database
+        run: |
+          helm upgrade --install postgres helm-chart/ \
+          --namespace ${{ secrets.K8S_NAMESPACE }}
+
+
       - name: Деплой gateway
         run: |
           helm upgrade --install gateway helm-chart/ \

@@ -4,6 +4,16 @@ global:
     enabled: false  
     host: example.com
 
+    postgresql:
+    auth:
+      username: postgres
+      password: postgres
+
+primary:
+  persistence:
+    enabled: true
+    size: 1Gi
+
 services:
   gateway:
     type: NodePort
@@ -34,6 +44,12 @@ services:
     env:
       - name: SERVICE_NAME
         value: reservation
+    database:
+      host: postgres-postgresql
+      port: 5432
+      name: reservations
+      user: postgres
+      password: postgres
 
   payment:
     enabled: false
@@ -50,6 +66,13 @@ services:
       - name: SERVICE_NAME
         value: payment
 
+    database:
+      host: postgres-postgresql
+      port: 5432
+      name: payments
+      user: postgres
+      password: postgres
+
   loyalty:
     enabled: false
     replicaCount: 2
@@ -64,3 +87,10 @@ services:
     env:
       - name: SERVICE_NAME
         value: loyalty
+
+    database:
+      host: postgres-postgresql
+      port: 5432
+      name: loyalties
+      user: postgres
+      password: postgres
