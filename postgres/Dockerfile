@@ -6,7 +6,7 @@ ENV POSTGRES_PASSWORD=postgres
 ENV POSTGRES_DB=mydatabase
 
 # Копируем скрипты инициализации
-COPY ./scripts /docker-entrypoint-initdb.d/
+COPY ./postgres /docker-entrypoint-initdb.d/
 
 # Даем права на выполнение всех скриптов
 RUN chmod -R 755 /docker-entrypoint-initdb.d/
