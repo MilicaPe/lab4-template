@@ -28,13 +28,27 @@ spec:
             {{- range $service.env }}
             - name: {{ .name }}
               value: "{{ .value }}"
-            - name: SPRING_DATASOURCE_URL
-                value: "jdbc:postgresql://{{ .Values.database.host }}:{{ .Values.database.port }}/{{ .Values.database.name }}"
-            - name: SPRING_DATASOURCE_USERNAME
-                value: "{{ .Values.database.user }}"
-            - name: SPRING_DATASOURCE_PASSWORD
-                value: "{{ .Values.database.password }}"
             {{- end }}
+            
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://{{ $.Values.database.host }}:{{ $.Values.database.port }}/{{ $.Values.database.name }}"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "{{ $.Values.database.user }}"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "{{ $.Values.database.password }}"
+
+          {{- if eq $name "postgres" }}  # Только для БД
+          volumeMounts:
+            - name: init-sql
+              mountPath: /docker-entrypoint-initdb.d/
+          {{- end }}
+      
+      {{- if eq $name "postgres" }}  # Определяем volume для БД
+      volumes:
+        - name: init-sql
+          configMap:
+            name: postgres-init-sql
+      {{- end }}
 ---
 {{- end }}
 {{- end }}

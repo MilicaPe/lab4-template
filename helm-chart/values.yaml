@@ -4,10 +4,15 @@ global:
     enabled: false  
     host: example.com
 
-    postgresql:
-    auth:
-      username: postgres
-      password: postgres
+database:
+  enabled: true
+  name: mydatabase
+  user: postgres
+  password: postgres
+  host: postgres
+  port: 5432
+  initScripts:
+    enabled: true
 
 primary:
   persistence:
