@@ -9,7 +9,7 @@ database:
   name: mydatabase
   user: postgres
   password: postgres
-  host: postgres
+  host: postgres-postgresql
   port: 5432
   initScripts:
     enabled: true
@@ -20,6 +20,25 @@ primary:
     size: 1Gi
 
 services:
+  postgres:
+    enabled: true
+    replicaCount: 1
+    image:
+      repository: milica764/my-postgres
+      tag: latest
+    ports:
+      - containerPort: 5432
+    env:
+      - name: POSTGRES_USER
+        value: "postgres"
+      - name: POSTGRES_PASSWORD
+        value: "postgres"
+      - name: POSTGRES_DB
+        values: "mydatabase"
+
+    type: ClusterIP
+    port: 5432
+
   gateway:
     type: NodePort
     enabled: false
@@ -49,12 +68,12 @@ services:
     env:
       - name: SERVICE_NAME
         value: reservation
-    database:
-      host: postgres-postgresql
-      port: 5432
-      name: reservations
-      user: postgres
-      password: postgres
+      - name: SPRING_DATASOURCE_URL
+        value: "jdbc:postgresql://postgres-postgresql:5432/reservations"
+      - name: SPRING_DATASOURCE_USERNAME
+        value: "postgres"
+      - name: SPRING_DATASOURCE_PASSWORD
+        value: "postgres"
 
   payment:
     enabled: false
@@ -70,13 +89,12 @@ services:
     env:
       - name: SERVICE_NAME
         value: payment
-
-    database:
-      host: postgres-postgresql
-      port: 5432
-      name: payments
-      user: postgres
-      password: postgres
+      - name: SPRING_DATASOURCE_URL
+        value: "jdbc:postgresql://postgres-postgresql:5432/payments"
+      - name: SPRING_DATASOURCE_USERNAME
+        value: "postgres"
+      - name: SPRING_DATASOURCE_PASSWORD
+        value: "postgres"
 
   loyalty:
     enabled: false
@@ -92,10 +110,9 @@ services:
     env:
       - name: SERVICE_NAME
         value: loyalty
-
-    database:
-      host: postgres-postgresql
-      port: 5432
-      name: loyalties
-      user: postgres
-      password: postgres
+      - name: SPRING_DATASOURCE_URL
+        value: "jdbc:postgresql://postgres-postgresql:5432/loyalties"
+      - name: SPRING_DATASOURCE_USERNAME
+        value: "postgres"
+      - name: SPRING_DATASOURCE_PASSWORD
+        value: "postgres"
