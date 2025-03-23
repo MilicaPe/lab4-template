@@ -75,7 +75,9 @@ jobs:
       # Настройка подключения к Timeweb Kubernetes
       - name: Configure Kubeconfig
         run: |
+          mkdir -p ~/.kube
           echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 --decode > ~/.kube/config
+          chmod 600 ~/.kube/config
           export KUBECONFIG=~/.kube/config
 
       - name: Debug Kubeconfig
