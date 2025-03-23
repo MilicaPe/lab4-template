@@ -15,31 +15,16 @@ jobs:
 
       # TODO build, publish to docker hub, deploy to k8s
 
-        # 1. Установка и аутентификация в Yandex Cloud
-      - name: Install Yandex Cloud CLI
-        run: |
-          curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
-          echo "$HOME/yandex-cloud/bin" >> $GITHUB_PATH
 
 
-
-
-      - name: Authenticate in Yandex Cloud
-        run: |
-          yc config profile create github-actions
-          yc config set token ${{ secrets.YANDEX_CLOUD_OAUTH }}
-          yc config set cloud-id ${{ secrets.YANDEX_CLOUD_ID }}
-          yc config set folder-id ${{ secrets.YANDEX_FOLDER_ID }}
-
-
-      #  2. Логин в Docker Hub
+      #  1. Логин в Docker Hub
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      #  3. Сборка и публикация образа
+      #  2. Сборка и публикация образа
 
       - name: Build and Push PostgreSQL Docker Image
         uses: docker/build-push-action@v4
@@ -49,7 +34,7 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/my-postgres:latest
 
 
-        #  3. Сборка и публикация образа
+        #  Сборка и публикация образа
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v4
         with:
@@ -79,22 +64,34 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/loyalty:latest
 
 
+      #  3. Установка kubectl и helm
+      - name: Install kubectl and helm
+        run: |
+          sudo apt-get update && sudo apt-get install -y kubectl
+          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+      # Настройка подключения к Timeweb Kubernetes
+      - name: Setup Kubernetes Config
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      #  5. Установка Nginx Ingress Controller
+      - name: Install Nginx Ingress Controller
+        run: |
+          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+          helm repo update
+          helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
+            --namespace kube-system
+
+
       #  3. Деплой в Kubernetes
 
       - name: Create Kubernetes Namespace
         run: |
           kubectl create namespace ${{ secrets.K8S_NAMESPACE }} || echo "Namespace already exists"
 
-
-      - name: Установка kubectl и helm
-        run: |
-          sudo apt-get update && sudo apt-get install -y kubectl
-          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-
-      - name: Настройка подключения к Kubernetes
-        run: |
-          yc managed-kubernetes cluster get-credentials ${{ secrets.K8S_CLUSTER_NAME }} \
-            --external --force
 
       - name: database
         run: |
