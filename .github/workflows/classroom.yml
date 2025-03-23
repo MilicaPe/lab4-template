@@ -26,12 +26,12 @@ jobs:
 
       #  2. Сборка и публикация образа
 
-      - name: Build and Push PostgreSQL Docker Image
-        uses: docker/build-push-action@v4
-        with:
-          context: ./postgres    # Путь к директории с Dockerfile
-          push: true             # Публикуем образ в Docker Hub
-          tags: ${{ secrets.DOCKER_USERNAME }}/my-postgres:latest
+  #    - name: Build and Push PostgreSQL Docker Image
+   #     uses: docker/build-push-action@v4
+    #    with:
+     #     context: ./postgres    # Путь к директории с Dockerfile
+      #    push: true             # Публикуем образ в Docker Hub
+       #   tags: ${{ secrets.DOCKER_USERNAME }}/my-postgres:latest
 
 
         #  Сборка и публикация образа
