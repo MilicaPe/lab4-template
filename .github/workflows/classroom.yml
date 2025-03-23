@@ -34,6 +34,8 @@ jobs:
        #   tags: ${{ secrets.DOCKER_USERNAME }}/my-postgres:latest
 
 
+
+
         #  Сборка и публикация образа
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v4
