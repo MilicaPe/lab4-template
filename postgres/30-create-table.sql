@@ -1,3 +1,5 @@
+-- 30-create-table.sql
+
 \connect reservations;
 
 CREATE TABLE hotels

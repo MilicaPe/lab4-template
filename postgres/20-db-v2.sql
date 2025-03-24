@@ -1,0 +1,9 @@
+-- 20-db-v2.sql
+CREATE DATABASE payments;
+GRANT ALL PRIVILEGES ON DATABASE payments TO program;
+
+CREATE DATABASE reservations;
+GRANT ALL PRIVILEGES ON DATABASE reservations TO program;
+
+CREATE DATABASE loyalties;
+GRANT ALL PRIVILEGES ON DATABASE loyalties TO program;
