@@ -26,11 +26,11 @@ jobs:
 
       #  2. Сборка и публикация образа
 
-  #    - name: Build and Push PostgreSQL Docker Image
-   #     uses: docker/build-push-action@v4
-    #    with:
-     #     context: ./postgres    # Путь к директории с Dockerfile
-      #    push: true             # Публикуем образ в Docker Hub
+      #- name: Build and Push PostgreSQL Docker Image
+       # uses: docker/build-push-action@v4
+       # with:
+       #   context: ./postgres    # Путь к директории с Dockerfile
+       #   push: true             # Публикуем образ в Docker Hub
        #   tags: ${{ secrets.DOCKER_USERNAME }}/my-postgres:latest
 
 
@@ -102,16 +102,16 @@ jobs:
           kubectl create namespace ${{ secrets.K8S_NAMESPACE }} || echo "Namespace already exists"
 
 
-    #  - name: database
-    #    run: |
-    #      helm uninstall postgres --namespace ${{ secrets.K8S_NAMESPACE }}
-    #      helm upgrade --install postgres helm-chart/ \
-    #      --namespace ${{ secrets.K8S_NAMESPACE }}
+   #   - name: database
+   #     run: |
+   #       helm uninstall postgres --namespace ${{ secrets.K8S_NAMESPACE }}
+   #       helm upgrade --install postgres helm-chart/ \
+   #       --namespace ${{ secrets.K8S_NAMESPACE }}
 
 
-    #  - name: Wait for PostgreSQL to be ready
-    #    run: |
-    #      kubectl wait --for=condition=available --timeout=600s deployment/postgres -n ${{ secrets.K8S_NAMESPACE }}
+   #   - name: Wait for PostgreSQL to be ready
+   #     run: |
+   #       kubectl wait --for=condition=available --timeout=600s deployment/postgres -n ${{ secrets.K8S_NAMESPACE }}
 
 
       - name: Деплой gateway
