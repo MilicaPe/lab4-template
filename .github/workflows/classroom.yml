@@ -104,8 +104,8 @@ jobs:
 
       - name: database
         run: |
-          helm uninstall postgres --namespace ${{ secrets.K8S_NAMESPACE }}
-          helm upgrade --install postgres helm-chart/ \
+          helm uninstall my-postgres --namespace ${{ secrets.K8S_NAMESPACE }}
+          helm upgrade --install my-postgres helm-chart/ \
           --namespace ${{ secrets.K8S_NAMESPACE }}
 
 
