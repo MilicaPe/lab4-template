@@ -24,7 +24,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-        2. Сборка и публикация образа
+      #  2. Сборка и публикация образа
 
       - name: Build and Push PostgreSQL Docker Image
         uses: docker/build-push-action@v4
@@ -107,7 +107,7 @@ jobs:
           helm uninstall postgres --namespace ${{ secrets.K8S_NAMESPACE }}
           helm upgrade --install postgres helm-chart/ \
           --namespace ${{ secrets.K8S_NAMESPACE }}
-          
+
 
 
       - name: Wait for PostgreSQL to be ready
