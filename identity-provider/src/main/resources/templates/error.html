@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Error Page</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Error Occurred</h1>
+
+<div th:if="${status}">
+    <p><b>Status:</b> <span th:text="${status}"></span></p>
+</div>
+
+<div th:if="${error}">
+    <p><b>Error:</b> <span th:text="${error}"></span></p>
+</div>
+
+<div th:if="${message}">
+    <p><b>Message:</b> <span th:text="${message}"></span></p>
+</div>
+
+<div th:if="${timestamp}">
+    <p><b>Timestamp:</b> <span th:text="${timestamp}"></span></p>
+</div>
+
+<div th:if="${path}">
+    <p><b>Path:</b> <span th:text="${path}"></span></p>
+</div>
+</body>
+</html>

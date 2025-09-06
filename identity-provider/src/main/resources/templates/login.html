@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Авторизуйтесь</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: #dc3545;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <h2>Авторизуйтесь</h2>
+
+    <div th:if="${error != null}" class="error" th:text="${error}"></div>
+
+    <form action="/perform_login" method="post">
+
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+        <input type="hidden" name="client_id" th:value="${clientId}" />
+        <input type="hidden" name="redirect_uri" th:value="${redirectUri}" />
+
+        <input type="hidden" name="state" th:value="${state}">
+        <input type="hidden" name="nonce" th:value="${nonce}">
+
+<!--        <input type="hidden" name="client_id" th:value="${client_id}">-->
+<!--        <input type="hidden" name="redirect_uri" th:value="${redirect_uri}">-->
+<!--        <input type="hidden" name="scope" th:value="${scope}">-->
+<!--        <input type="hidden" name="state" th:value="${state}">-->
+
+
+        <!-- Передаем параметры OAuth обратно -->
+<!--        <input type="hidden" name="client_id" th:value="${oauth2Request['client_id'][0]}">-->
+<!--        <input type="hidden" name="redirect_uri" th:value="${oauth2Request['redirect_uri'][0]}">-->
+<!--        <input type="hidden" name="response_type" th:value="${oauth2Request['response_type'][0]}">-->
+<!--        <input type="hidden" name="scope" th:value="${oauth2Request['scope'][0]}">-->
+<!--        <input type="hidden" name="state" th:value="${oauth2Request['state'][0]}">-->
+<!--        <input type="hidden" name="nonce" th:value="${oauth2Request['nonce'][0]}">-->
+
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <button type="submit">Войти</button>
+    </form>
+</div>
+</body>
+</html>

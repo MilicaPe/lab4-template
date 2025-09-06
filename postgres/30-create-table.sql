@@ -1,8 +1,8 @@
 -- 30-create-table.sql
 
-\connect reservations;
+\c reservations;
 
-CREATE TABLE hotels
+CREATE TABLE  IF NOT EXISTS hotels
 (
     id        SERIAL PRIMARY KEY,
     hotel_uid uuid         NOT NULL UNIQUE,
@@ -14,7 +14,7 @@ CREATE TABLE hotels
     price     INT          NOT NULL
 );
 
-CREATE TABLE reservation
+CREATE TABLE  IF NOT EXISTS reservation
 (
     id              SERIAL PRIMARY KEY,
     reservation_uid uuid UNIQUE NOT NULL,
@@ -24,12 +24,12 @@ CREATE TABLE reservation
     status          VARCHAR(20) NOT NULL
         CHECK (status IN ('PAID', 'CANCELED')),
     start_date      TIMESTAMP WITH TIME ZONE,
-    end_data        TIMESTAMP WITH TIME ZONE
+    end_date        TIMESTAMP WITH TIME ZONE
 );
 
 
-\connect payments;
-CREATE TABLE payment
+\c payments;
+CREATE TABLE  IF NOT EXISTS payment
 (
     id          SERIAL PRIMARY KEY,
     payment_uid uuid        NOT NULL,
@@ -39,8 +39,8 @@ CREATE TABLE payment
 );
 
 
-\connect loyalties;
-CREATE TABLE loyalty
+\c loyalties;
+CREATE TABLE  IF NOT EXISTS loyalty
 (
     id                SERIAL PRIMARY KEY,
     username          VARCHAR(80) NOT NULL UNIQUE,
@@ -48,4 +48,16 @@ CREATE TABLE loyalty
     status            VARCHAR(80) NOT NULL DEFAULT 'BRONZE'
         CHECK (status IN ('BRONZE', 'SILVER', 'GOLD')),
     discount          INT         NOT NULL
+);
+
+
+\connect users;
+CREATE TABLE  IF NOT EXISTS all_users
+(
+    id                SERIAL PRIMARY KEY,
+    username          VARCHAR(80) NOT NULL UNIQUE,
+    password          VARCHAR(100) NOT NULL,
+    email             VARCHAR(80) NOT NULL UNIQUE,
+    role              VARCHAR(80) NOT NULL DEFAULT 'USER'
+        CHECK (role IN ('USER', 'ADMIN'))
 );

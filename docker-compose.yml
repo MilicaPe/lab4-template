@@ -4,9 +4,10 @@ services:
     container_name: postgres
     restart: on-failure
     environment:
+      POSTGRES_INITDB_SKIP_INIT: "true"
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: "postgres"
-      POSTGRES_DB: reservations, payments, loyalties
+      POSTGRES_DB: reservations, payments, loyalties, users
     volumes:
       - db-data:/var/lib/postgresql/data
       - ./postgres/:/docker-entrypoint-initdb.d/
@@ -55,6 +56,20 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/reservations"
       JAVA_OPTS: "-Xmx512m"
 
+
+  identity:
+    restart: always
+    build: ./identity-provider
+    ports:
+      - "9000:9000"
+    networks:
+      - backend
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/users"
+
+
   gate:
     restart: always
     build: ./gateway
@@ -67,6 +82,7 @@ services:
       - loyalty
       - payment
       - reservation
+      - identity
 
 networks:
   backend:
